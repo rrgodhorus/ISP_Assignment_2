@@ -33,36 +33,42 @@ class LPFile():
         try:
             data_read = self.LPfile.readat(num_bytes, offset)
             if num_bytes is None:
-                num_bytes = len(data_read)
+                if len(data_read) != 0:
+                    num_bytes = len(data_read)
+                else:
+                    num_bytes = len(self.pending_data)
         except SeekPastEndOfFileError as e: 
             if not (self.pending_offset <= offset < self.pending_offset + len(self.pending_data)):
                 raise
             if num_bytes is None:
                 num_bytes = len(self.pending_data)
+
+        # log(num_bytes)
         data_read += " " * (num_bytes - len(data_read))
+        # log("data_read",len(data_read),"\n")
         buf_beg = self.pending_offset
-        log("buf_beg",buf_beg,"\n")
         buf_end = self.pending_offset + len(self.pending_data) - 1
-        log("buf_end",buf_end,"\n")
         data_beg = offset
-        log("data_beg",data_beg,"\n")
         data_end = offset + num_bytes - 1
-        log("data_end",data_end,"\n")
+        # log("buf_beg",buf_beg,"\n")
+        # log("buf_end",buf_end,"\n")
+        # log("data_beg",data_beg,"\n")
+        # log("data_end",data_end,"\n")
         if data_end < buf_beg or buf_end < data_beg:
             return data_read
         rewr_data_beg = max(buf_beg - data_beg, 0)
         rewr_data_end = min(buf_end - data_beg, data_end - data_beg)
         rewr_buffer_beg = max(data_beg- buf_beg, 0)
         rewr_buffer_end = min(data_end - buf_beg, buf_end - buf_beg)
-        log(data_read,"\n")
-        log(self.pending_data,"\n")
-        log(rewr_data_beg,"\n")
-        log(rewr_data_end,"\n")
-        log(rewr_buffer_beg,"\n")
-        log(rewr_buffer_end,"\n")
-        data_read = data_read.replace(data_read[rewr_data_beg : rewr_data_end + 1], self.pending_data[rewr_buffer_beg: rewr_buffer_end + 1])
-        log(data_read,"\n")
-        log(self.pending_data,"\n")
+        # log("buffer",self.pending_data,"\n")
+        # log(rewr_buffer_beg,"\n")
+        # log(rewr_buffer_end,"\n")
+        # log("data_read",data_read,"\n")
+        # log(rewr_data_beg,"\n")
+        # log(rewr_data_end,"\n")
+        data_read = data_read[:rewr_data_beg] + self.pending_data[rewr_buffer_beg: rewr_buffer_end + 1] + data_read[rewr_data_end + 1:]
+        # log(data_read,"\n")
+        # log(self.pending_data,"\n")
         return data_read
 
     def writeat(self, data, offset):
