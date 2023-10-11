@@ -10,12 +10,14 @@ len_apple_string = len(apple_string)
 
 
 myfile.writeat(apple_string,0)
-# myfile.writeat("red", 12)
+myfile.writeat("red", 12)
+
+myfile.undo()
 
 read_output = myfile.readat(None,0)
-log(read_output)
-log("\nend\n")
-# assert(apple_string == myfile.readat(len_apple_string,0))
+# log(read_output)
+# log("\nend\n")
+assert(apple_string == myfile.readat(len_apple_string,0))
 
 
 # intial write to the file
