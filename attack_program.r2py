@@ -4,49 +4,161 @@ if "testfile.txt" in listfiles():
 
 # create a file
 myfile = openfile("testfile.txt",True)
-# myfile2 = openfile("testfile.txt",True) 
+
+myfile.undo()
+myfile.undo()
+
+assert("" == myfile.readat(0, 0))
+assert("" == myfile.readat(None, 0))
+assert("" == myfile.readat(1, 0))
+assert("" == myfile.readat(1000, 0))
+
+myfile.undo()
+
+try:
+  temp = myfile.readat(None,1)
+except SeekPastEndOfFileError:
+  pass
+else:
+  assert False, "SeekPastEndOfFileError not raised"
+
+try:
+  temp = myfile.readat(-1,0)
+except RepyArgumentError:
+  pass
+else:
+  assert False, "RepyArgumentError not raised"
+
+try:
+  temp = myfile.readat(5,-3)
+except RepyArgumentError:
+  pass
+else:
+  assert False, "RepyArgumentError not raised"
+
 
 apple_string = "An apple is green in color."
-
-# log("here\n")
-# myfile.undo()
-# log("then here\n")
+assert(27 == len(apple_string))
 
 myfile.writeat(apple_string, 0)
-# log("here?")
-# myfile.writeat("red", 12)
-# log("here2")
-# myfile.undo()
-# log("here")
-read_output = myfile.readat(None,0)
-log(read_output)
-log("\nend\n")
 
-# myfile.undo()
+assert("" == myfile.readat(None,0)) # writeat() not committed yet
+
+myfile.writeat("red", 12)
+assert(apple_string == myfile.readat(None,0))
+assert("." == myfile.readat(None,26))
+assert("" == myfile.readat(500,27))
+
+myfile.writeat("blue", 12)
+assert("An apple is reden in color." == myfile.readat(None,0))
+assert("reden in color." == myfile.readat(None,12))
+assert("" == myfile.readat(0,12))
+assert("red" == myfile.readat(3,12))
+
+myfile.undo()
+myfile.undo()
+myfile.undo()
+assert("An apple is reden in color." == myfile.readat(None,0))
+myfile.writeat("",0) # flush with empty write
+assert("An apple is reden in color." == myfile.readat(None,0)) # blue isn't written
+
+myfile.writeat("Blue", 0)
+myfile.undo()
+myfile.writeat("blue", 5)
+myfile.undo()
+myfile.writeat("Blue", 12)
+
+
 myfile.close()
 
-# log(read_output)
-# log("\nend\n")
-# assert(apple_string == myfile.readat(len(apple_string),0))
+try:
+  myfile.close()
+except FileClosedError:
+  pass
+else:
+  assert False, "FileClosedError not raised"
+
+try:
+  myfile.readat(None,0)
+except FileClosedError:
+  pass
+else:
+  assert False, "FileClosedError not raised"
+
+myfile.undo() # Undo does nothing even if file is closed
+
+try:
+  myfile.writeat("Test",0)
+except FileClosedError:
+  pass
+else:
+  assert False, "FileClosedError not raised"
 
 
-# intial write to the file
-# myfile.writeat("12345678",0)
+myfile = openfile("testfile.txt",False)
 
-# attempt to overwrite the beginning of the file
-# myfile.writeat("Hi!",0) 
+assert("An apple is Bluen in color." == myfile.readat(None,0))
+assert("s B" == myfile.readat(3,10))
 
-# now, undo the previous write
-# myfile.undo()
+myfile.writeat("yellow",12)
 
-# the contents should still be "12345678" as the overwrite was undone
-# assert("12345678" == myfile.readat(8,0))
+try:
+  myfile.writeat("Brown",28)
+  # This shouldn't be written to buffer, nor should the buffer be flushed
+except SeekPastEndOfFileError:
+  pass
+else:
+  assert False, "SeekPastEndOfFileError not raised"
 
-# close the file
-# myfile.close()
+assert("An apple is Bluen in color." == myfile.readat(None,0))
 
-# myfile2=openfile("testfile.txt",False)
+myfile.writeat("",0) # Empty write to flush
 
-# read_output = myfile2.readat(5,3)
-# log(read_output)
-# log("\nend\n")
+assert("An apple is yellowin color." == myfile.readat(None,0))
+
+large_data_dump = "Large dump of data overwriting everything in the file"
+
+thread_locker = createlock()
+
+mycontext['thread_count'] = 3
+
+def file_write_task_1():
+  myfile.writeat("Hello World",3)
+  myfile.writeat("",0) # flush to disk
+  thread_locker.acquire(True)
+  mycontext['thread_count'] -= 1
+  thread_locker.release()
+
+def file_write_task_2():
+  # ultimately this write should dictate the final length of the file, since it's the largest and covers the most area
+  myfile.writeat(large_data_dump,0)
+  myfile.writeat("",21) # flush to disk
+  thread_locker.acquire(True)
+  mycontext['thread_count'] -= 1
+  thread_locker.release()
+
+def file_write_task_3():
+  myfile.writeat("colour.",15)
+  myfile.writeat("", 20)
+  thread_locker.acquire(True)
+  mycontext['thread_count'] -= 1
+  thread_locker.release()
+
+
+createthread(file_write_task_1)
+createthread(file_write_task_2)
+createthread(file_write_task_3)
+
+while True:
+  thread_locker.acquire(True)
+  if mycontext['thread_count'] == 0:
+    thread_locker.release()
+    break
+  thread_locker.release()
+
+myfile.close()
+
+myfile = openfile("testfile.txt",False)
+
+assert(53 == len(myfile.readat(None,0)))
+
