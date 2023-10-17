@@ -3,21 +3,31 @@ if "testfile.txt" in listfiles():
   removefile("testfile.txt")
 
 # create a file
-myfile=openfile("testfile.txt",True)
+myfile = openfile("testfile.txt",True)
+# myfile2 = openfile("testfile.txt",True) 
 
 apple_string = "An apple is green in color."
-len_apple_string = len(apple_string)
 
+# log("here\n")
+# myfile.undo()
+# log("then here\n")
 
-myfile.writeat(apple_string,0)
-myfile.writeat("red", 12)
-
-myfile.undo()
-
+myfile.writeat(apple_string, 0)
+# log("here?")
+# myfile.writeat("red", 12)
+# log("here2")
+# myfile.undo()
+# log("here")
 read_output = myfile.readat(None,0)
+log(read_output)
+log("\nend\n")
+
+# myfile.undo()
+myfile.close()
+
 # log(read_output)
 # log("\nend\n")
-assert(apple_string == myfile.readat(len_apple_string,0))
+# assert(apple_string == myfile.readat(len(apple_string),0))
 
 
 # intial write to the file
@@ -33,7 +43,7 @@ assert(apple_string == myfile.readat(len_apple_string,0))
 # assert("12345678" == myfile.readat(8,0))
 
 # close the file
-myfile.close()
+# myfile.close()
 
 # myfile2=openfile("testfile.txt",False)
 

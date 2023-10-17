@@ -1,5 +1,5 @@
 """
-This security layer inadequately handles the undo functionality
+This security layer handles the undo functionality
 
 Note:
     This security layer uses encasementlib.r2py, restrictions.default, repy.py and Python
@@ -21,74 +21,121 @@ class LPFile():
         # globals
         mycontext['debug'] = False
         self.LPfile = openfile(filename, create)
+        self.filename = filename
+        self.filesize = len(self.LPfile.readat(None,0))
         self.pending_data = None
         self.pending_offset = None
         self.buffer_flushed = True
+        self.lock = createlock()
 
     def readat(self, num_bytes, offset):
-        data_read = ''
-        if self.buffer_flushed:
-            data_read = self.LPfile.readat(num_bytes, offset)
-            return data_read
-        try:
-            data_read = self.LPfile.readat(num_bytes, offset)
-            if num_bytes is None:
-                if len(data_read) != 0:
-                    num_bytes = len(data_read)
-                else:
-                    num_bytes = len(self.pending_data)
-        except SeekPastEndOfFileError as e: 
-            if not (self.pending_offset <= offset < self.pending_offset + len(self.pending_data)):
-                raise
-            if num_bytes is None:
-                num_bytes = len(self.pending_data)
+        if num_bytes < 0 and num_bytes != None:
+            raise RepyArgumentError("Negative sizelimit specified!")
+        if offset < 0:
+            raise RepyArgumentError("Negative read offset speficied!")
 
-        # log(num_bytes)
-        data_read += " " * (num_bytes - len(data_read))
-        # log("data_read",len(data_read),"\n")
-        buf_beg = self.pending_offset
-        buf_end = self.pending_offset + len(self.pending_data) - 1
-        data_beg = offset
-        data_end = offset + num_bytes - 1
-        # log("buf_beg",buf_beg,"\n")
-        # log("buf_end",buf_end,"\n")
-        # log("data_beg",data_beg,"\n")
-        # log("data_end",data_end,"\n")
-        if data_end < buf_beg or buf_end < data_beg:
-            return data_read
-        rewr_data_beg = max(buf_beg - data_beg, 0)
-        rewr_data_end = min(buf_end - data_beg, data_end - data_beg)
-        rewr_buffer_beg = max(data_beg- buf_beg, 0)
-        rewr_buffer_end = min(data_end - buf_beg, buf_end - buf_beg)
-        # log("buffer",self.pending_data,"\n")
-        # log(rewr_buffer_beg,"\n")
-        # log(rewr_buffer_end,"\n")
-        # log("data_read",data_read,"\n")
-        # log(rewr_data_beg,"\n")
-        # log(rewr_data_end,"\n")
-        data_read = data_read[:rewr_data_beg] + self.pending_data[rewr_buffer_beg: rewr_buffer_end + 1] + data_read[rewr_data_end + 1:]
-        # log(data_read,"\n")
-        # log(self.pending_data,"\n")
-        return data_read
+        self.lock.acquire(True)
+        try:
+            if self.LPfile is None:
+                raise FileClosedError("File '"+self.filename+"' is already closed!")
+            log(offset+"\n")
+            log(self.filesize + "\n")
+            if offset > self.filesize:
+                raise SeekPastEndOfFileError("Seek offset extends past the EOF!")
+
+            data_read = ''
+            if self.buffer_flushed:
+                return self.LPfile.readat(num_bytes, offset)
+            try:
+                data_read = self.LPfile.readat(num_bytes, offset)
+                if num_bytes is None:
+                    if len(data_read) != 0:
+                        num_bytes = len(data_read)
+                    else:
+                        num_bytes = len(self.pending_data)
+            except SeekPastEndOfFileError as e: 
+                if not (self.pending_offset <= offset < self.pending_offset + len(self.pending_data)):
+                    raise
+                if num_bytes is None:
+                    num_bytes = len(self.pending_data)
+
+            # log(num_bytes)
+            data_read += " " * (num_bytes - len(data_read)) # !!! possible to reove this
+            # log("data_read",len(data_read),"\n")
+            buf_beg = self.pending_offset
+            buf_end = self.pending_offset + len(self.pending_data) - 1
+            data_beg = offset
+            data_end = offset + num_bytes - 1
+            # log("buf_beg",buf_beg,"\n")
+            # log("buf_end",buf_end,"\n")
+            # log("data_beg",data_beg,"\n")
+            # log("data_end",data_end,"\n")
+            if data_end < buf_beg or buf_end < data_beg:
+                return data_read
+            rewr_data_beg = max(buf_beg - data_beg, 0)
+            rewr_data_end = min(buf_end - data_beg, data_end - data_beg)
+            rewr_buffer_beg = max(data_beg- buf_beg, 0)
+            rewr_buffer_end = min(data_end - buf_beg, buf_end - buf_beg)
+            # log("buffer",self.pending_data,"\n")
+            # log(rewr_buffer_beg,"\n")
+            # log(rewr_buffer_end,"\n")
+            # log("data_read",data_read,"\n")
+            # log(rewr_data_beg,"\n")
+            # log(rewr_data_end,"\n")
+            return data_read[:rewr_data_beg] + self.pending_data[rewr_buffer_beg: rewr_buffer_end + 1] + data_read[rewr_data_end + 1:]
+            # log(data_read,"\n")
+            # log(self.pending_data,"\n")
+        finally:
+            self.lock.release()
 
     def writeat(self, data, offset):
-        if not self.buffer_flushed:
-            self.LPfile.writeat(self.pending_data, self.pending_offset)
-            self.buffer_flushed = True
-        self.pending_data = data
-        self.pending_offset = offset
-        self.buffer_flushed = False
+        if offset < 0:
+            raise RepyArgumentError("Negative read offset speficied!")
+        if type(data) is not str:
+            raise RepyArgumentError("Data must be specified as a string!")
+
+        self.lock.acquire(True)
+        try:
+            if self.LPfile is None:
+                raise FileClosedError("File '"+self.filename+"' is already closed!")
+            if offset > self.filesize:
+                raise SeekPastEndOfFileError("Seek offset extends past the EOF!")
+            if not self.buffer_flushed:
+                self.LPfile.writeat(self.pending_data, self.pending_offset)
+                if self.pending_offset + len(self.pending_data) > self.filesize:
+                    self.filesize = self.pending_offset + len(self.pending_data)
+                self.buffer_flushed = True
+            self.pending_data = data
+            self.pending_offset = offset
+            self.buffer_flushed = False
+        finally:
+            self.lock.release()
 
     def undo(self):
-        self.pending_data = None
-        self.pending_offset = None
-        self.buffer_flushed = True
+        self.lock.acquire(True)
+        try:
+            if self.LPfile is None:
+                return
+            self.pending_data = None
+            self.pending_offset = None
+            self.buffer_flushed = True
+        finally:
+            self.lock.release()
 
     def close(self):
-        if not self.buffer_flushed:
-            self.LPfile.writeat(self.pending_data, self.pending_offset)
-            self.buffer_flushed = True
-        self.LPfile.close()
+        self.lock.acquire(True)
+        try:
+            if self.LPFile is None:
+                raise FileClosedError("File '"+str(self.filename)+"' is already closed!")
+
+            if not self.buffer_flushed:
+                self.LPfile.writeat(self.pending_data, self.pending_offset)
+            
+            self.LPfile.close()
+            self.LPfile = None
+                
+        finally:
+            self.lock.release()
 
 def LPopenfile(filename, create):
     return LPFile(filename, create)
