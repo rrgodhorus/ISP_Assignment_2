@@ -1,3 +1,11 @@
+def timeout_thread_func():
+  timeout_seconds = 10
+  sleep(timeout_seconds)
+  assert False, "Timed out after " + str(timeout_seconds)
+  exitall()
+
+createthread(timeout_thread_func)
+
 # clean up if the file exists.
 if "testfile.txt" in listfiles():
   removefile("testfile.txt")
@@ -161,4 +169,6 @@ myfile.close()
 myfile = openfile("testfile.txt",False)
 
 assert(53 == len(myfile.readat(None,0)))
+
+exitall()
 
