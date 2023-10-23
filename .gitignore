@@ -1,5 +1,5 @@
 .vscode/**/*
-testfile.txt
+testfile.txt.*
 possible_errors.txt
 temp_rr.r2py
-test_results.txt*
+test_results.txt

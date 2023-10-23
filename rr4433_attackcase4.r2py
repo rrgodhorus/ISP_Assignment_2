@@ -1,0 +1,34 @@
+def timeout_thread_func():
+  timeout_seconds = 10
+  sleep(timeout_seconds)
+  assert False, "Timed out after " + str(timeout_seconds) + " seconds"
+  exitall()
+
+createthread(timeout_thread_func)
+
+# clean up if the file exists.
+if "testfile.txt" in listfiles():
+  removefile("testfile.txt")
+
+# create a file
+myfile = openfile("testfile.txt",True)
+
+apple_string = "An apple is green in color."
+
+assert(27 == len(apple_string)) # The string is 27 characters long
+
+# Assertion: write to an empty file at offset 0 should write the string (to buffer) and nothing else
+myfile.writeat(apple_string, 0)
+
+# Assertion: writeat() not committed yet, hence return an empty string
+assert("" == myfile.readat(None,0)) 
+
+# Assertion: This should commit the previous write
+myfile.writeat("red", 12)
+
+# Assertion: The string in buffer is written to file, hence it should be read in its entirety
+assert(apple_string == myfile.readat(None,0))
+
+
+exitall()
+
