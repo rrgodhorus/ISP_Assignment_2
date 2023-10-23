@@ -1,7 +1,7 @@
 def timeout_thread_func():
   timeout_seconds = 10
   sleep(timeout_seconds)
-  assert False, "Timed out after " + str(timeout_seconds)
+  assert False, "Timed out after " + str(timeout_seconds) + " seconds"
   exitall()
 
 createthread(timeout_thread_func)
