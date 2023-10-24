@@ -19,5 +19,11 @@ assert("" == myfile.readat(None, 0))
 assert("" == myfile.readat(1, 0))
 assert("" == myfile.readat(1000, 0))
 
+myfile.close()
+
+# clean up if the file afterwards.
+if "testfile.txt" in listfiles():
+  removefile("testfile.txt")
+
 exitall()
 

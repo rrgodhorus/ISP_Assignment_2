@@ -30,5 +30,11 @@ myfile.writeat("red", 12)
 assert(apple_string == myfile.readat(None,0))
 
 
+myfile.close()
+
+# clean up if the file afterwards.
+if "testfile.txt" in listfiles():
+  removefile("testfile.txt")
+
 exitall()
 

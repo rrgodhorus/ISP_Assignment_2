@@ -46,5 +46,11 @@ else:
   assert False, "RepyArgumentError not raised when reading from 'None' offset"
 
 
+myfile.close()
+
+# clean up if the file afterwards.
+if "testfile.txt" in listfiles():
+  removefile("testfile.txt")
+
 exitall()
 
