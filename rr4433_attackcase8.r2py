@@ -18,6 +18,8 @@ assert(27 == len(apple_string))
 
 myfile.writeat(apple_string, 0) # Not written to file yet
 
+myfile.writeat("Blue", 12)
+
 myfile.writeat("yellow",12)
 
 try:
@@ -28,7 +30,7 @@ except SeekPastEndOfFileError:
 else:
   assert False, "SeekPastEndOfFileError not raised"
 
-assert("An apple is green in color." == myfile.readat(None,0))
+assert("An apple is Bluen in color." == myfile.readat(None,0))
 
 myfile.writeat("",0) # Empty write to flush
 
