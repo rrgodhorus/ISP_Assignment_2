@@ -5,7 +5,6 @@ def timeout_thread_func():
   exitall()
 
 createthread(timeout_thread_func)
-# log("HERE")
 
 # clean up if the file exists.
 if "testfile.txt" in listfiles():
@@ -133,7 +132,6 @@ except SeekPastEndOfFileError:
 else:
   assert False, "SeekPastEndOfFileError not raised"
 
-log(myfile.readat(None,0))
 assert("An apple is Bluen in color." == myfile.readat(None,0))
 
 myfile.writeat("",0) # Empty write to flush
