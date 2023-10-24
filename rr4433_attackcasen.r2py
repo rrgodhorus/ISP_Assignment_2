@@ -48,6 +48,20 @@ else:
 apple_string = "An apple is green in color."
 assert(27 == len(apple_string))
 
+try:
+  temp = myfile.writeat(apple_string, 1)
+except SeekPastEndOfFileError:
+  pass
+else:
+  assert False, "SeekPastEndOfFileError not raised"
+
+try:
+  temp = myfile.writeat(23, 0)
+except RepyArgumentError:
+  pass
+else:
+  assert False, "RepyArgumentError not raised"
+
 myfile.writeat(apple_string, 0)
 
 assert("" == myfile.readat(None,0)) # writeat() not committed yet
@@ -172,7 +186,7 @@ assert(53 == len(myfile.readat(None,0)))
 
 myfile.close()
 
-# clean up if the file afterwards.
+# clean up the file afterwards.
 if "testfile.txt" in listfiles():
   removefile("testfile.txt")
 

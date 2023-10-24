@@ -41,7 +41,7 @@ else:
   assert False, "FileClosedError not raised for writeat()"
 
 
-# clean up if the file afterwards.
+# clean up the file afterwards.
 if "testfile.txt" in listfiles():
   removefile("testfile.txt")
 

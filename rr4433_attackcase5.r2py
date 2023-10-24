@@ -23,6 +23,7 @@ myfile.writeat(apple_string, 0)
 
 assert("" == myfile.readat(None,0)) # writeat() not committed yet
 
+# Assertion: This should be a valid operation and data should be held in buffer correctly
 myfile.writeat("red", 12)
 assert(apple_string == myfile.readat(None,0))
 assert("." == myfile.readat(None,26))
@@ -34,7 +35,7 @@ assert("reden in color." == myfile.readat(None,12))
 assert("" == myfile.readat(0,12))
 assert("red" == myfile.readat(3,12))
 
-# Assertion: Multiple undos() are equivalent to a single undo()
+# Assertion: Multiple continuous undos() should be equivalent to a single undo()
 myfile.undo()
 myfile.undo()
 myfile.undo()

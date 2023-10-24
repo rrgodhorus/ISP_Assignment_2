@@ -47,7 +47,7 @@ assert("s B" == myfile.readat(3,10))
 
 myfile.close()
 
-# clean up if the file afterwards.
+# clean up the file afterwards.
 if "testfile.txt" in listfiles():
   removefile("testfile.txt")
 
