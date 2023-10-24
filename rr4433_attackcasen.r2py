@@ -170,5 +170,11 @@ myfile = openfile("testfile.txt",False)
 
 assert(53 == len(myfile.readat(None,0)))
 
+myfile.close()
+
+# clean up if the file afterwards.
+if "testfile.txt" in listfiles():
+  removefile("testfile.txt")
+
 exitall()
 
