@@ -71,6 +71,7 @@ reference_monitor_nr2320.r2py
 reference_monitor_ns5239.r2py
 reference_monitor_pg2441.r2py
 reference_monitor_qap205.r2py
+reference_monitor_qc815.r2py
 reference_monitor_raz6675.r2py
 reference_monitor_rsh9689.r2py
 reference_monitor_rwm9998.r2py
@@ -86,6 +87,7 @@ reference_monitor_sr7013.r2py
 reference_monitor_ss17542.r2py
 reference_monitor_ss17936.r2py
 reference_monitor_ssk9850.r2py
+reference_monitor_ssm10021.r2py
 reference_monitor_st5073.r2py
 reference_monitor_sv2616.r2py
 reference_monitor_sv2657.r2py
