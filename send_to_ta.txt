@@ -1,0 +1,32 @@
+<1>
+ss17542_attackcase1.r2py - This is a wrong multi-threading test case. 
+Assume reference_monitor implements locks correctly. 
+Then readat(), writeat(), undo() and close() are atomic and can execute only one at a time. However, the threads themselves can run in parallel.
+One potential way the two threads can be executed is like this:
+myfile.writeat("12345678",0)  [ file: <empty>,    buffer: "12345678"]
+myfile.writeat("Hi!",0)       [ file: "12345678", buffer: "Hi!"     ]
+myfile.writeat("0123",0)      [ file: "Hi!45678", buffer: "0123"    ]
+myfile.undo()                 [ file: "Hi!45678", buffer: <empty>   ]      
+myfile.writeat("0123",0)      [ file: "Hi!45678", buffer: "0123"    ] 
+myfile.undo()                 [ file: "Hi!45678", buffer: <empty>   ]
+
+Hence final file contents = "Hi!45678", which implies the assertion "01235678" != myfile.readat(8,0) is wrong.
+
+<2>
+ss17542_attackcase4.r2py - There are two errors in this testcase. 
+One - the main thread will not wait for the created threads to continue execution, hence close file can be called before the other threads complete leading to FileClosedError.
+Two - the testcase tries to predict the final value by expecting a particular order of thread execution. This need not be true like in the previous example.
+Consider the threads execute like this:
+myfile.writeat("12345678",0)        [ file: <empty>,    buffer: "12345678"  ]
+myfile.writeat("Hi!",0)             [ file: "12345678", buffer: "Hi!"       ]
+myfile.writeat("hello",0)           [ file: "Hi!45678", buffer: "hello"     ]
+myfile.writeat("0123",0)            [ file: "hello678", buffer: "0123"      ]
+myfile.undo()                       [ file: "hello678", buffer: <empty>     ]
+myfile.writeat("0123",0)            [ file: "hello678", buffer: "0123"      ]
+myfile.undo()                       [ file: "hello678", buffer: <empty>     ]
+myfile.undo()                       [ file: "hello678", buffer: <empty>     ]
+myfile.undo()                       [ file: "hello678", buffer: <empty>     ]
+myfile.writeat("hello",0)           [ file: "hello678", buffer: "hello"     ]
+myfile.undo()                       [ file: "hello678", buffer: <empty>     ]
+
+Hence, final file contents = "hello678", which implies assertion "0123o678" != myfile.readat(8,0) is wrong.

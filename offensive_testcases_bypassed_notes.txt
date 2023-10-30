@@ -1,0 +1,146 @@
+aac9988_attackcase1.r2py - write to negative offset without catching RepyArgumentError
+aac9988_attackcase2.r2py - typo in last line (myfile1 instead of myfile)
+aac9988_attackcase4.r2py - invalid filename in testcase
+aac9988_attackcase5.r2py - multiple close() should raise a FileClosedError exception
+aj4128_attackcase8.r2py -  checking for invalid exception (readting 12 bytes from offset 0 should be valid)
+ajt9694_attackcase1.r2py - erroneously throwing error
+ajt9694_attackcase2.r2py - trying to open non-existent file in testcase
+ajt9694_attackcase4.r2py - erroneously throwing error
+akg9910_attackcase3.r2py - wrong multi-threading testcase (the main thread will keep executing without waiting for the other 2 threads)
+ar8300_attackcase1.r2py  - wrong assignment (no ABopenfile)
+ar8300_attackcase4.r2py  - wrong exception caught (RepyArgumentError instead of SeekPastEndOfFileError)
+ar8300_attackcase5.r2py  - wrong assignment (no ABopenfile)
+ar8300_attackcase7.r2py  - wrong assignment (no ABopenfile)
+bb3722_attackcase4.r2py  - there is no write permission (write to an open file at offset 0 should be valid)
+bp2200_attackcase3.r2py  - read from negative offset without catching RepyArgumentError
+bp2200_attackcase7.r2py  - write to negative offset without catching RepyArgumentError
+bp2200_attackcase9.r2py  - testcase removed a file, recreated it and tried to read old data from it
+crt7919_attackcase1.r2py - trying to read an empty file (buffer not committed yet)
+crt7919_attackcase2.r2py - erroneously read from a file that exists already (instead of creating a new one)
+crt7919_attackcase3.r2py - erroneously expecting uncomitted data to be read
+crt7919_attackcase4.r2py - trying to write past EOF
+crt7919_attackcase5.r2py - erroneously read from a file that exists already (instead of creating a new one)
+dkd284_attackcase4.r2py  - erroneously logging after raising valid exception (write to negative offset)
+dkd284_attackcase5.r2py  - wrong multi-threading testcase (the main thread will keep executing without waiting for the other threads leading to file getting closed earlier)
+dp3757_attackcase1.r2py  - invalid syntax in testcase
+dp3757_attackcase2.r2py  - write to negative offset without catching RepyArgumentError
+ds7615_attackcase14.r2py - catching wrong exception (AssertionError instead of )
+dsc7792_attackcase2.r2py - wrong multi-threading testcase (the assertion need not be correct always)
+dsc7792_attackcase3.r2py - write to negative offset without catching RepyArgumentError
+dsc7792_attackcase4.r2py - write to negative offset without catching RepyArgumentError
+dz2188_attackcase1.r2py  - invalid syntax in testcase
+dz2188_attackcase2.r2py  - invalid syntax in testcase
+dz2188_attackcase3.r2py  - invalid syntax in testcase
+dz2188_attackcase4.r2py  - invalid syntax in testcase
+dz2188_attackcase5.r2py  - invalid syntax in testcase
+dz2188_attackcase6.r2py  - invalid syntax in testcase
+dz2188_attackcase7.r2py  - invalid syntax in testcase
+eav8168_attackcase5.r2py - writing to invalid offset without raising SeekPastEndOfFileError (there's an index error - offset should be 8 instead of 9)
+eh3300_attackcase1.r2py  - invalid code syntax (trying to import python libraries using 'import')
+eh3300_attackcase2.r2py  - invalid code (using print statement)
+eh3300_attackcase3.r2py  - invalid code (using print statement)
+eh3300_attackcase4.r2py  - invalid code syntax (name 'include_repyv2' is not defined)
+eh3300_attackcase5.r2py  - invalid code syntax (name 'include_repyv2' is not defined)
+eh3300_attackcase6.r2py  - invalid code (using print statement)
+eh3300_attackcase7.r2py  - invalid code (using print statement)
+ew1791_attackcase1.r2py  - erroneously read from a file that exists already. Also, the assertion is false (string should be "validid")
+ew1791_attackcase3.r2py  - erroneously read from a file that exists already. Also, writing to invalid offset without raising SeekPastEndOfFileError (there's an index error - offset should be 7 instead of 8)
+ew1791_attackcase4.r2py  - erroneously caught exception raised by syntax error in test case (testfile.txt instead of "testfile.txt")
+fgd238_attackcase2.r2py  - wrong multi-threading testcase (the main thread will keep executing without waiting for the other threads leading to file getting closed earlier)
+ha2755_attackcase5.r2py  - there is no read-only mode (write to an open file at offset 0 should be valid)
+hj2118_attackcase3.r2py  - trying to read from a closed file. syntax error with undo
+hq2040_attackcase1.r2py  - erroneously logging and throwing an exception after trying to create file with invalid name
+hq2040_attackcase4.r2py  - erroneous logging in test case (last line)
+hq2040_attackcase5.r2py  - erroneous logging in test case (last line)
+hq2040_attackcase6.r2py  - erroneous logging in test case (last line)
+hq2040_attackcase7.r2py  - erroneous logging in test case (last line)
+hw2509_attackcase2.r2py  - after undo() readat() should return "HELLOHi!" only (not "HELLOHi!BYE")
+hw2509_attackcase4.r2py  - trying to read from a closed file (last line of test case) without catching exception
+jc12690_attackcase1.r2py - wrong assertion (line 22: contents != "Hello!"). Should be contents == "Hello!" since "Hello World!" was not committed due to undo()
+jc12690_attackcase2.r2py - wrong assertion (line 27: contents == "Lorem.....aliqua"). Read only 8 bytes, so it should be "Lorem ip"
+jl14678_attackcase1.r2py - erroneous logging in test case
+jl14678_attackcase10.r2py - writing to invalid offset (f.writeat(data, 5) is called on an empty file) 
+jl14678_attackcase2.r2py - trying to open the same file in two threads
+jl14678_attackcase3.r2py - erroneous logging in test case (both branches of if statement logs)
+jl14678_attackcase4.r2py - erroneous logging in test case (both branches of if statement logs)
+jl14678_attackcase5.r2py - invalid syntax error (line 22 - problem with double quotes)
+jl14678_attackcase6.r2py - erroneous logging in test case (both branches of if statement logs)
+jl14678_attackcase7.r2py - erroneous logging in test case (both branches of if statement logs)
+jl14678_attackcase8.r2py - code syntax error ('ascii' codec can't encode character u'\\xe9' in position 14)
+jl14678_attackcase9.r2py - Trying to open a file with invalid filename length, and erroneously logging the exception thrown. Also, erroneous logging both branches of if statement
+jw6680_attackcase2.r2py  - trying to write to a closed file (last line of test case) without catching exception
+jw6680_attackcase3.r2py  - trying to write to a closed file (line 10 of test case) without catching exception
+jwh8918_attackcase1.r2py - code syntax error (due to typo in line 6 - testfile instead of testFile)
+jz3928_attackcase1.r2py  - invalid syntax (using print)
+jz3928_attackcase2.r2py  - invalid syntax (using print)
+jz3928_attackcase3.r2py  - invalid syntax (using print)
+jz3928_attackcase4.r2py  - invalid syntax (using print)
+jzh9076_attackcase2.r2py - writing to invalid offset without raising SeekPastEndOfFileError
+jzh9076_attackcase4.r2py - write to negative offset without catching RepyArgumentError
+jzh9076_attackcase5.r2py - writing to invalid offset without raising SeekPastEndOfFileError
+jzh9076_attackcase6.r2py - writing to invalid offset without raising SeekPastEndOfFileError
+kc4433_attackcase1.r2py  - wrong assertion (should be "12345678" == myfile.readat(8,0))
+kc4433_attackcase7.r2py  - calling undo() on a closed file should return without raising any exception
+kc4433_attackcase9.r2py  - read from invalid offset without catching SeekPastEndOfFileError
+kk5268_attackcase5.r2py  - the write at offset 13 is valid (string "Hello, world!" extends from offset 0 to 12) - so should not raise any exception
+kp3291_attackcase2.r2py  - reading 7 bytes from an empty file (write not committed yet) at offset 0 is still valid (first argument only specifies maximum no. of bytes to be read)
+kue202_attackcase3.r2py  - wrong assertion (multiple continuous undos() should be equivalent to a single undo()) - should be "ABCDEFGH" == file_contents
+mlh9655_attackcase7.r2py - ?? - code syntax error (name 'dy_import_module' is not defined)
+mm13171_attackcase6.r2py - write to negative offset without catching RepyArgumentError
+mm13171_attackcase7.r2py - write to negative offset without catching RepyArgumentError
+mmy5950_attackcase2.r2py - wrong multi-threading testcase (the main thread will keep executing without waiting for the other threads leading to data race on line 30 readat())
+mx2228_attackcase3.r2py  - erroneously trying to read uncommited data ("afterundo" hasn't been written to file before trying to read it)
+nd2290_attackcase2.r2py  - writing to invalid offset without raising SeekPastEndOfFileError
+nd2290_attackcase7.r2py  - writing to invalid offset without raising SeekPastEndOfFileError
+----------------------------
+nd2661_attackcase1.r2py  - wrong assertion (reading 0 bytes from offset 0 from an empty file should give "")
+nd2661_attackcase5.r2py  - calling undo() on a closed file should return without raising any exception
+nms9607_attackcase4.r2py - ??? Weird behavious of true/false
+raz6675_attackcase1.r2py - trying to read from a closed file (line 13) without catching exception
+raz6675_attackcase2.r2py - wrong assertion (line 23) - undo() can reverse only the last valid writeat() (multiple consecutive undos() are same as a single undo())
+raz6675_attackcase3.r2py - trying to open file with illegal filename ("" empty string)
+raz6675_attackcase4.r2py - repy is killing the process since the testcase is trying to allocate a very large string causing memory to go over limit
+rsh9689_attackcase3.r2py - 
+sb9156_attackcase1.r2py
+sb9156_attackcase3.r2py
+sg8024_attackcase3.r2py
+sl7228_attackcase9.r2py
+sl9052_attackcase1.r2py
+sr7013_attackcase3.r2py
+ss17542_attackcase2.r2py
+ss17542_attackcase4.r2py
+ssk9850_attackcase4.r2py
+st5073_attackcase3.r2py
+st5073_attackcase4.r2py
+tm4258_attackcase5.r2py
+uhm202_attackcase6.r2py
+uhm202_attackcase7.r2py
+vkk2020_attackcase3.r2py
+vkk2020_attackcase4.r2py
+vkk2020_attackcase5.r2py
+vkk2020_attackcase6.r2py
+vm2496_attackcase6.r2py
+vm2496_attackcase7.r2py
+vrk3366_attackcase3.r2py
+vt2182_attackcase8.r2py
+yc4557_attackcase2.r2py
+yc4557_attackcase3.r2py
+yc4557_attackcase4.r2py
+yc4557_attackcase5.r2py
+yc4557_attackcase6.r2py
+yl7685_attackcase1.r2py
+yl7685_attackcase2.r2py
+yl7685_attackcase3.r2py
+yl7685_attackcase4.r2py
+yl7685_attackcase5.r2py
+yl7685_attackcase6.r2py
+yl7685_attackcase7.r2py
+yl7685_attackcase8.r2py
+yl7685_attackcase9.r2py
+yx3254_attackcase1.r2py
+yx3254_attackcase2.r2py
+yx3254_attackcase3.r2py
+yx3254_attackcase4.r2py
+yx3254_attackcase5.r2py
+yx3254_attackcase6.r2py
+zx904_attackcase3.r2py
