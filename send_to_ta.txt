@@ -1,3 +1,16 @@
+akg9910_attackcase3.r2py - wrong multi-threading testcase (the main thread will keep executing without waiting for the other 2 threads)
+dkd284_attackcase5.r2py - wrong multi-threading testcase (the main thread will keep executing without waiting for the other threads leading to file getting closed earlier)
+dsc7792_attackcase2.r2py - wrong multi-threading testcase (the assertion need not be correct always)
+fgd238_attackcase2.r2py - wrong multi-threading testcase (the main thread will keep executing without waiting for the other threads leading to file getting closed earlier)
+jg7683_attackcase5.r2py - wrong multi-threading testcase (the sleeps are too short to guarantee any order of execution)
+mmy5950_attackcase2.r2py - wrong multi-threading testcase (the main thread will keep executing without waiting for the other threads leading to data race on line 30 readat())
+nd2661_attackcase5.r2py - calling undo() on a closed file should return without raising any exception
+sl7228_attackcase9.r2py - multiple threads run in parallel...two writeats() can be called simultaneously
+ss17542_attackcase1.r2py   - CHALLENGED
+ss17542_attackcase4.r2py   - CHALLENGED
+st5073_attackcase2.r2py - TIMEOUT
+
+------------------------------------------------------------------------
 <1>
 ss17542_attackcase1.r2py - This is a wrong multi-threading test case. 
 Assume reference_monitor implements locks correctly. 

@@ -18,7 +18,6 @@ for referencemonitor in reference_monitor_rr4433*; do
             # echo $referencemonitor >> ref_mons_bypassed.txt
             echo $testcase >> testcases_bypassed.txt
         fi
+        ./cleanup_script.sh
     done
 done
-
-./cleanup_script.sh

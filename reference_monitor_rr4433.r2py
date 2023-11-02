@@ -29,6 +29,8 @@ class LPFile():
         self.lock = createlock()
 
     def readat(self, num_bytes, offset):
+        if type(offset) not in [int, long]:
+            raise RepyArgumentError("Invalid type " + str(type(offset)))
         if num_bytes < 0 and num_bytes != None:
             raise RepyArgumentError("Negative sizelimit specified!")
         if offset < 0:
@@ -43,6 +45,8 @@ class LPFile():
             self.lock.release()
 
     def writeat(self, data, offset):
+        if type(offset) not in [int, long]:
+            raise RepyArgumentError("Invalid type " + str(type(offset)))
         if offset < 0:
             raise RepyArgumentError("Negative read offset speficied!")
         if type(data) is not str:
