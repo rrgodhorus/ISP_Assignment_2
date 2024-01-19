@@ -4,7 +4,7 @@
 > testcases_bypassed.txt
 
 counter=0
-for referencemonitor in reference_monitor_rr4433*; do
+for referencemonitor in reference_monitor_*; do
     ((counter++))
     echo $counter : $referencemonitor under test | tee -a test_results.txt
     counter2=0
@@ -13,10 +13,9 @@ for referencemonitor in reference_monitor_rr4433*; do
         echo $counter2 : $testcase attacking $referencemonitor 
         test_output=$(python repy.py restrictions.default encasementlib.r2py $referencemonitor $testcase 2>&1 | tee -a test_results.txt)
         if [ -n "$test_output" ]; then
-            echo "Output detected"
+            echo "Output detected!"
             echo $test_output | tail -n 1
-            # echo $referencemonitor >> ref_mons_bypassed.txt
-            echo $testcase >> testcases_bypassed.txt
+            echo "$testcase successfully attacked $referencemonitor" >> testcases_bypassed.txt
         fi
         ./cleanup_script.sh
     done
